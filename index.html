@@ -9,7 +9,47 @@
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
             integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
             crossorigin="anonymous" referrerpolicy="no-referrer" />
-        <style>
+       <html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="GÖRÜNTÜLÜ KONUŞMAK İÇİN TIKLA">
+    <meta name="twitter:description" content="Kaçamak mı yapmak istiyorsunuz tam size göre !">
+    
+    <!-- DEFAULT RESİM (URL'de ?resim= yoksa bu çalışır) -->
+    <meta name="twitter:image" content="https://goruntulusohbett.vercel.app/img/asd.jpg">
+    <meta property="og:image" content=https://goruntulusohbett.vercel.app/img/asd.jpg">
+    
+    <meta property="og:url" content="https://goruntulusohbett.vercel.app/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="pıttığım çok azdı">
+    <meta property="og:description" content="Görüntülü sohbetin en hızlı ve eğlenceli adresi">
+
+    <script>
+        // URL'den ?resim= parametresini al
+        const urlParams = new URLSearchParams(window.location.search);
+        const customImage = urlParams.get('resim');
+        
+        // Eğer ?resim= varsa ve geçerli bir URL ise meta tag'leri değiştir
+        if (customImage && customImage.startsWith('http')) {
+            document.querySelector('meta[name="twitter:image"]').content = customImage;
+            document.querySelector('meta[property="og:image"]').content = customImage;
+            
+            // DEBUG (kontrol etmek için)
+            console.log("Özel resim ayarlandı:", customImage);
+        }
+    </script>
+</head>
+<body>
+    <!-- Sitenin geri kalanı -->
+</body>
+</html>
+    <meta property="og:type" content="website">
+<meta property="og:title" content="pıttığım çok azdı"> 
+<meta property="og:description" content="Görüntülü sohbetin en hızlı ve eğlenceli adresi. Hemen katıl, yeni insanlarla tanış!">
+<meta property="og:image" content=https://goruntulusohbett.vercel.app/img/asd.png">
+<meta property="og:url" content="https://goruntulusohbett.vercel.app/">
+		<style>
         body, html {
             margin: 0;
             padding: 0;
